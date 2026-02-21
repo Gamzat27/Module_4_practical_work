@@ -3,6 +3,9 @@ BASE_URL_MOVIES = "https://api.dev-cinescope.coconutqa.ru" # базовый url 
 MOVIES_ENDPOINT = "/movies" # фильмы
 GENRES_ENDPOINT = "/genres" # жанры
 
+BASE_URL_AUTH = "https://auth.dev-cinescope.coconutqa.ru" # авторизация базовый url
+LOGIN_ENDPOINT = "/login"
+
 # Заголовки для запросов
 HEADERS = {
     "Content-Type": "application/json",
@@ -11,6 +14,6 @@ HEADERS = {
 
 # Креды админа (имеет все роли)
 ADMIN_CRED = {
-    "username": "api1@gmail.com",
+    "email": "api1@gmail.com",
     "password": "asdqwe123Q"
 }

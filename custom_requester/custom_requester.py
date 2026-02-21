@@ -4,12 +4,13 @@ import logging
 import os
 
 
+
 class CustomRequester:
     """
     Кастомный реквестер для стандартизации и упрощения отправки HTTP-запросов.
     """
     base_headers = {
-        "Content-Type": "application/json", # базовый словарь заголовков
+        "Content-Type": "application/json",  # базовый словарь заголовков
         "Accept": "application/json"
     }
 

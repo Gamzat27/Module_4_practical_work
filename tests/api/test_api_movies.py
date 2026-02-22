@@ -40,3 +40,36 @@ class TestMovieApi:
         resp = movies_api.film_editing(movie_id=get_movie["id"], new_data=new_data, expected_status=200)
         assert resp.status_code == 200
         assert resp.json()["name"] == new_data["name"]
+
+    # негативные кейсы
+
+    def test_create_movie_unauthorized(self, movies_api, my_test_film):
+        auth = movies_api.requester.session.headers.pop("Authorization", None)
+        try:
+            resp = movies_api.create_movie(my_test_film, expected_status=401)
+            assert resp.status_code in (401, 403)
+        finally:
+            if auth:
+                movies_api.requester.session.headers["Authorization"] = auth
+
+    def test_delete_movie_not_found(self, movies_api):
+        resp = movies_api.delete_movie(movie_id=9999999, expected_status=404)
+        assert resp.status_code == 404
+
+    def test_getting_movie_not_found(self, movies_api):
+        resp = movies_api.getting_movie(my_get_film=9999999, expected_status=404)
+        assert resp.status_code == 404
+
+    def test_get_movie_posters_bad_params(self, movies_api):
+        url = movies_api.requester.base_url.rstrip('/') + "/movies/posters?limit=-5"
+        resp = movies_api.requester.session.get(url, headers=movies_api.requester.session.headers)
+        assert resp.status_code in (400, 500)
+
+    def test_film_editing_unauthorized(self, movies_api, get_movie, my_test_film):
+        auth = movies_api.requester.session.headers.pop("Authorization", None)
+        try:
+            resp = movies_api.film_editing(movie_id=get_movie["id"], new_data=my_test_film, expected_status=401)
+            assert resp.status_code in (401, 403)
+        finally:
+            if auth:
+                movies_api.requester.session.headers["Authorization"] = auth

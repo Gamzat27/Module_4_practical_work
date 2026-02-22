@@ -3,16 +3,24 @@ class TestMovieApi:
 
     def test_create_movie(self, movies_api, my_test_film):
         resp = movies_api.create_movie(my_test_film, expected_status=201)
-        self.movie_id = resp.json()["id"]
         assert resp.status_code == 201, "Статус код не соответствует ожидаемому."
         assert resp.json()["name"] == my_test_film["name"], ("Имя фильма в тесте не соответствует "
                                                              "имени фильма сгенерированного в фикстуре.")
         assert resp.json()["genreId"] == my_test_film["genreId"]
         assert resp.json()["price"] == my_test_film["price"], "Цены фильмов не совпадают."
 
+        # проверяем, что созданный фильм существует
+        get_resp = movies_api.getting_movie(my_get_film=resp.json()["id"], expected_status=200)
+        assert get_resp.status_code == 200, "Созданный фильм не найден."
+        assert get_resp.json()["name"] == resp.json()["name"], "Имена не сходятся."
+
     def test_delete_movie(self, movies_api, my_get_film):
         resp = movies_api.delete_movie(movie_id=my_get_film["id"], expected_status=200)
         assert resp.status_code == 200, "Не удалось удалить фильм."
+
+        # проверяем, что удаленный фильм отсутствует
+        get_resp = movies_api.getting_movie(my_get_film=my_get_film["id"], expected_status=404)
+        assert get_resp.status_code == 404, "Фильм все еще существует."
 
     def test_getting_movie(self, movies_api, my_get_film):
         movie_id = my_get_film["id"]
@@ -40,6 +48,12 @@ class TestMovieApi:
         resp = movies_api.film_editing(movie_id=get_movie["id"], new_data=new_data, expected_status=200)
         assert resp.status_code == 200
         assert resp.json()["name"] == new_data["name"]
+
+        # проверяем, что данные обновились
+        get_resp = movies_api.getting_movie(my_get_film=resp.json()["id"], expected_status=200)
+        assert get_resp.status_code == 200, "Отредактированный фильм не найден."
+        assert resp.json()["name"] == new_data["name"], "Имена не совпадают с изменениями."
+
 
     # негативные кейсы
 

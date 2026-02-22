@@ -5,4 +5,4 @@ class AuthAPI:
         self.requester = requester
 
     def login(self, creds):
-        return self.requester.send_request("POST", LOGIN_ENDPOINT, data=creds)
+        return self.requester.send_request(method="POST", endpoint=LOGIN_ENDPOINT, data=creds)

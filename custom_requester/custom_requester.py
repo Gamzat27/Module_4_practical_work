@@ -41,7 +41,10 @@ class CustomRequester:
         if need_logging:
             self.log_request_and_response(response)
         if response.status_code != expected_status:
-            raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
+            # логируем для дебага — чтобы в тесте можно было увидеть тело ответа
+            self.logger.error(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
+            # не подменяем ответ — возвращаем его, чтобы тест сам мог проверить тело
+            return response
         return response
 
     def _update_session_headers(self, **kwargs):

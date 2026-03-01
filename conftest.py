@@ -44,8 +44,6 @@ def admin_api(api_manager, session):
 def movies_api(admin_api):
     return admin_api.movies
 
-from clients.movies_api import MoviesAPI
-
 @pytest.fixture(scope="function")
 def unauthenticated_movies_api(movies_api):
     session = requests.Session()

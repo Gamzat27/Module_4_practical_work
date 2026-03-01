@@ -1,9 +1,9 @@
 
 import pytest
 import requests
+import copy
 from tests.api.api_manager import ApiManager
 from utils.datagenerator import DataGenerator
-from custom_requester.custom_requester import CustomRequester
 from constants import ADMIN_CRED
 
 @pytest.fixture(scope="function")
@@ -18,13 +18,6 @@ def my_get_film(admin_api):
     movie = create_resp.json()
     yield movie
 
-@pytest.fixture(scope="function")
-def get_movie(admin_api):
-    payload = DataGenerator.generate_movie()
-    create_resp = admin_api.movies.create_movie(payload, expected_status=201)
-    movie = create_resp.json()
-    yield movie
-
 @pytest.fixture(scope="session")
 def session():
     s = requests.Session()
@@ -32,19 +25,11 @@ def session():
     s.close()
 
 @pytest.fixture(scope="session")
-def requester(session):
-    # base_url можно указывать None и в API формировать полный URL, либо создать два requester'а
-    r = CustomRequester(session=session, base_url=None)
-    yield r
-
-@pytest.fixture(scope="session")
 def api_manager(session):
-    # ApiManager должен принимать requester (см. ниже). Можно также создать два requester's внутри ApiManager.
     return ApiManager(session=session)
 
 @pytest.fixture(scope="session")
 def admin_api(api_manager, session):
-    # логин через AuthAPI; кладём токен (если есть) в session.headers
     resp = api_manager.auth.login(ADMIN_CRED)
     resp.raise_for_status()
     try:
@@ -53,10 +38,27 @@ def admin_api(api_manager, session):
         token = None
     if token:
         session.headers.update({"Authorization": f"Bearer {token}"})
-    # если сервер установил cookie — requests.Session их уже сохранил
     return api_manager
 
 @pytest.fixture(scope="session")
 def movies_api(admin_api):
-    # просто возвращаем manager.movies — он использует ту же session
     return admin_api.movies
+
+from clients.movies_api import MoviesAPI
+
+@pytest.fixture(scope="function")
+def unauthenticated_movies_api(movies_api):
+    session = requests.Session()
+    session.headers.update({
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    })
+    movies_api_copy = copy.copy(movies_api)
+    if hasattr(movies_api_copy, "session"):
+        movies_api_copy.session = session
+    elif hasattr(movies_api_copy, "requester") and hasattr(movies_api_copy.requester, "session"):
+        movies_api_copy.requester.session = session
+    else:
+        raise RuntimeError("Не удалось заменить сессию в копии movies_api.")
+
+    return movies_api_copy

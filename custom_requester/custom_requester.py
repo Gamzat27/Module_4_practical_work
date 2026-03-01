@@ -1,16 +1,14 @@
-# Кастомный реквестер для API запросов
+
 import json
 import logging
 import os
-
-
 
 class CustomRequester:
     """
     Кастомный реквестер для стандартизации и упрощения отправки HTTP-запросов.
     """
     base_headers = {
-        "Content-Type": "application/json",  # базовый словарь заголовков
+        "Content-Type": "application/json",
         "Accept": "application/json"
     }
 
@@ -20,13 +18,13 @@ class CustomRequester:
         :param session: Объект requests.Session.
         :param base_url: Базовый URL API.
         """
-        self.session = session # передаёте объект requests.Session() (переиспользуем соединения).
-        self.base_url = base_url # базовый URL API
-        self.headers = self.base_headers.copy() # копия базовых заголовков, чтобы не менять классную константу.
-        self.logger = logging.getLogger(__name__) # логгер для вывода информации
-        self.logger.setLevel(logging.INFO)        # (уровень INFO)
+        self.session = session
+        self.base_url = base_url
+        self.headers = self.base_headers.copy()
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
-    def send_request(self, method, endpoint, data=None, expected_status=200, need_logging=True):
+    def send_request(self, method, endpoint, data=None, params=None, expected_status=200, need_logging=True):
         """
         Универсальный метод для отправки запросов.
         :param method: HTTP метод (GET, POST, PUT, DELETE и т.д.).
@@ -37,24 +35,23 @@ class CustomRequester:
         :return: Объект ответа requests.Response.
         """
         url = f"{self.base_url}{endpoint}"
-        response = self.session.request(method, url, json=data, headers=self.headers)
+        response = self.session.request(method, url, json=data, params=params)
+
         if need_logging:
             self.log_request_and_response(response)
+
         if response.status_code != expected_status:
-            # логируем для дебага — чтобы в тесте можно было увидеть тело ответа
-            self.logger.error(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
-            # не подменяем ответ — возвращаем его, чтобы тест сам мог проверить тело
-            return response
+            raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
+
         return response
 
     def _update_session_headers(self, **kwargs):
         """
         Обновление заголовков сессии.
-        :param session: Объект requests.Session, предоставленный API-классом.
         :param kwargs: Дополнительные заголовки.
         """
-        self.headers.update(kwargs)  # Обновляем базовые заголовки
-        self.session.headers.update(self.headers)  # Обновляем заголовки в текущей сессии
+        self.headers.update(kwargs)
+        self.session.headers.update(self.headers)
 
     def log_request_and_response(self, response):
         """

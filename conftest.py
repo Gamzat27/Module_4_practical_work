@@ -2,12 +2,12 @@
 import pytest
 import requests
 import copy
-from tests.api.api_manager import ApiManager
+from clients.api_manager import ApiManager
 from utils.datagenerator import DataGenerator
 from constants import ADMIN_CRED
 
 @pytest.fixture(scope="function")
-def my_test_film(admin_api):
+def created_movie(admin_api):
     data = DataGenerator.generate_movie()
     return data
 

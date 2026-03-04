@@ -5,6 +5,7 @@ GENRES_ENDPOINT = "/genres" # жанры
 
 BASE_URL_AUTH = "https://auth.dev-cinescope.coconutqa.ru" # авторизация базовый url
 LOGIN_ENDPOINT = "/login"
+REGISTER_ENDPOINT = "/register"
 
 # Заголовки для запросов
 HEADERS = {
@@ -17,3 +18,7 @@ ADMIN_CRED = {
     "email": "api1@gmail.com",
     "password": "asdqwe123Q"
 }
+
+# логин и пароль для супер админа
+SUPER_ADMIN_USERNAME = "api1@gmail.com"
+SUPER_ADMIN_PASSWORD = "asdqwe123Q"

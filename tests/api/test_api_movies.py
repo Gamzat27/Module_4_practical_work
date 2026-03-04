@@ -69,6 +69,6 @@ class TestMovieApi:
         movies_api.get_movies(params={"pageSize": -5}, expected_status=400)
 
     def test_update_unauthorized(self, unauthenticated_movies_api, my_get_film, created_movie):
-        resp = unauthenticated_movies_api.update_movie(movie_id=my_get_film["id"], data=created_movie,
+        unauthenticated_movies_api.update_movie(movie_id=my_get_film["id"], data=created_movie,
                                                        expected_status=401)
 

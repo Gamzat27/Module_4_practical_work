@@ -34,3 +34,21 @@ class DataGenerator:
             "published": faker.boolean(chance_of_getting_true=75),
             "genreId": random.choice(cls.GENRE_IDS),
         }
+
+    @classmethod
+    def generate_user(cls, email=None, full_name=None, password=None):
+        # по умолчанию генерируем данные, если не переданы
+        if email is None:
+            email = faker.unique.email()
+        if full_name is None:
+            full_name = faker.name()
+        if password is None:
+            # faker.password позволяет задать требования: длину и наличие цифр/символов/регистра
+            password = faker.password(length=10, special_chars=False, digits=True, upper_case=True, lower_case=True)
+
+        return {
+            "email": email,
+            "fullName": full_name,
+            "password": password,
+            "passwordRepeat": password
+        }

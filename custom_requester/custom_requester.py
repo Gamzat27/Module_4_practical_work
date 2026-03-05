@@ -51,7 +51,7 @@ class CustomRequester:
         :param kwargs: Дополнительные заголовки.
         """
         self.headers.update(kwargs)
-        self.session.headers.update(self.headers)
+        self.session.headers.update(kwargs)
 
     def log_request_and_response(self, response):
         """

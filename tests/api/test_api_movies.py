@@ -1,3 +1,7 @@
+import pytest
+
+from conftest import common_user, admin_user, super_admin
+
 
 class TestMovieApi:
 
@@ -11,9 +15,23 @@ class TestMovieApi:
         get_resp = movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
         assert get_resp.json()["name"] == resp.json()["name"], "Имена не сходятся."
 
-    def test_delete_movie(self, movies_api, my_get_film):
-        movies_api.delete_movie(movie_id=my_get_film["id"], expected_status=200)
-        movies_api.get_movie(movie_id=my_get_film["id"], expected_status=404)
+
+    @pytest.mark.parametrize(
+        "user, expected_delete_status",
+        [
+            ("common_user", 403),
+            ("admin_user", 403),
+            ("super_admin", 200),
+        ],
+        indirect=["user"]
+    )
+    def test_delete_movie(self, user, movies_api, my_get_film, expected_delete_status):
+        user.api.movies_api.delete_movie(movie_id=my_get_film["id"], expected_status=expected_delete_status)
+
+        if expected_delete_status == 200:
+            user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=404)
+        else:
+            user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=200)
 
 
     def test_get_movie(self, movies_api, my_get_film):
@@ -32,6 +50,7 @@ class TestMovieApi:
         assert resp.json()["reviews"] is not None
         assert resp.json()["genre"]["name"] == my_get_film["genre"]["name"]
 
+
     def test_get_movies(self, movies_api):
         resp = movies_api.get_movies(expected_status=200)
         body = resp.json()
@@ -41,10 +60,12 @@ class TestMovieApi:
         assert  "pageSize" in body
         assert "pageCount" in body
 
+
     def test_get_movies_params(self, movies_api):
         resp = movies_api.get_movies(params={"locations": "MSK"}, expected_status=200)
         movies = resp.json()["movies"]
         assert any(m["location"] == "MSK" for m in movies), "В выборку попали фильмы не только из Москвы."
+
 
     def test_update_movie(self, movies_api, my_get_film, created_movie):
         new_data = created_movie
@@ -54,6 +75,26 @@ class TestMovieApi:
         movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
         assert resp.json()["name"] == new_data["name"], "Имена не совпадают с изменениями."
 
+
+    @pytest.mark.parametrize("locations", ["MSK", "SPB"])
+    def test_get_movies_parametrize(self, movies_api, locations):
+        response = movies_api.get_movies(params={"locations": locations}, expected_status=200)
+        movies = response.json()["movies"]
+        for movie in movies:
+            assert movie["location"] == locations
+
+
+    # негативно-позитивный кейсы
+    def test_create_movie_with_user_rights(self, movies_api, common_user, created_movie):
+        response = common_user.api.movies_api.create_movie(data=created_movie, expected_status=403)
+        assert response.json()["message"] == "Forbidden resource"
+        assert response.json()["error"] == "Forbidden"
+
+
+    def test_create_movie_with_admin_rights(self, movies_api, admin_user, created_movie):
+        response = admin_user.api.movies_api.create_movie(data=created_movie, expected_status=403)
+        assert response.json()["message"] == "Forbidden resource"
+        assert response.json()["error"] == "Forbidden"
 
     # негативные кейсы
     def test_create_movie_unauthorized(self, unauthenticated_movies_api, created_movie):
@@ -71,4 +112,3 @@ class TestMovieApi:
     def test_update_unauthorized(self, unauthenticated_movies_api, my_get_film, created_movie):
         unauthenticated_movies_api.update_movie(movie_id=my_get_film["id"], data=created_movie,
                                                        expected_status=401)
-

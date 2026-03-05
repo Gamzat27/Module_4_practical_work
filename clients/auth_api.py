@@ -1,4 +1,4 @@
-from constants import LOGIN_ENDPOINT, REGISTER_ENDPOINT
+from constants.constants import LOGIN_ENDPOINT, REGISTER_ENDPOINT
 from custom_requester.custom_requester import CustomRequester
 
 class AuthAPI(CustomRequester):

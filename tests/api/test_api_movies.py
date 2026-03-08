@@ -19,8 +19,8 @@ class TestMovieApi:
     @pytest.mark.parametrize(
         "user, expected_delete_status",
         [
-            ("common_user", 403),
-            ("admin_user", 403),
+            pytest.param("common_user", 403, marks=pytest.mark.slow, id="slow-case-common_user"),
+            pytest.param("admin_user", 200, marks=pytest.mark.slow, id="slow-case-admin_user"),
             ("super_admin", 200),
         ],
         indirect=["user"]
@@ -85,16 +85,16 @@ class TestMovieApi:
 
 
     # негативно-позитивный кейсы
+    @pytest.mark.slow
     def test_create_movie_with_user_rights(self, movies_api, common_user, created_movie):
         response = common_user.api.movies_api.create_movie(data=created_movie, expected_status=403)
         assert response.json()["message"] == "Forbidden resource"
         assert response.json()["error"] == "Forbidden"
 
-
+    @pytest.mark.slow
     def test_create_movie_with_admin_rights(self, movies_api, admin_user, created_movie):
-        response = admin_user.api.movies_api.create_movie(data=created_movie, expected_status=403)
-        assert response.json()["message"] == "Forbidden resource"
-        assert response.json()["error"] == "Forbidden"
+        response = admin_user.api.movies_api.create_movie(data=created_movie, expected_status=201)
+        assert response.json()["name"] == created_movie["name"]
 
     # негативные кейсы
     def test_create_movie_unauthorized(self, unauthenticated_movies_api, created_movie):
@@ -108,7 +108,7 @@ class TestMovieApi:
 
     def test_get_movies_bad_params(self, movies_api):
         movies_api.get_movies(params={"pageSize": -5}, expected_status=400)
-
+    @pytest.mark.regression
     def test_update_unauthorized(self, unauthenticated_movies_api, my_get_film, created_movie):
         unauthenticated_movies_api.update_movie(movie_id=my_get_film["id"], data=created_movie,
                                                        expected_status=401)

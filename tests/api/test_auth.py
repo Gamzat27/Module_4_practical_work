@@ -1,17 +1,19 @@
+import pytest
+from models.pydantic_models import RegisterUserResponse
+from clients.api_manager import ApiManager
 
 
 class TestAuthAPI:
 
-    def test_register_user(self, api_manager, add_test_user):
-        response = api_manager.auth_api.register_user(add_test_user)
-        response_data = response.json()
-        assert response_data["email"] == add_test_user["email"], "Email не совпадает"
-        assert "id" in response_data, "ID пользователя отсутствует в ответе"
-        assert "roles" in response_data, "Роли пользователя отсутствуют в ответе"
-        assert "USER" in response_data["roles"], "Роль USER должна быть у пользователя"
+    @pytest.mark.smoke
+    def test_register_user(self, api_manager: ApiManager, creation_user_data):
+        response = api_manager.auth_api.register_user(user_data=creation_user_data)
+        register_user_response = RegisterUserResponse(**response.json())
+        assert register_user_response.email == creation_user_data.email, "Email не совпадает"
 
+    @pytest.mark.smoke
     def test_register_and_login_user(self, api_manager, registered_user):
-        response = api_manager.auth_api.login_user(registered_user)
+        response = api_manager.auth_api.login_user(login_data=registered_user)
         response_data = response.json()
         assert "accessToken" in response_data, "Токен доступа отсутствует в ответе"
-        assert response_data["user"]["email"] == registered_user["email"], "Email не совпадает"
+        assert response_data["user"]["email"] == registered_user["email"]

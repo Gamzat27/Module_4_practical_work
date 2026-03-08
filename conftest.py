@@ -8,6 +8,7 @@ from constants.constants import ADMIN_CRED
 from resurses.user_creds import SuperAdminCreds
 from entities.user import User
 from constants.roles import Roles
+from models.pydantic_models import TestUser
 
 @pytest.fixture(scope="function")
 def created_movie(admin_api):
@@ -72,28 +73,23 @@ def unauthenticated_movies_api(movies_api):
 
 @pytest.fixture
 def add_test_user():
-    user_data = DataGenerator.generate_user()
-    return {
-        "email": user_data["email"],
-        "fullName": user_data["fullName"],
-        "password": user_data["password"],
-        "passwordRepeat": user_data["passwordRepeat"],
-        "roles": [Roles.USER.value]
-    }
+    random_password = DataGenerator.generate_random_password()
+    return TestUser(
+        email=DataGenerator.generate_random_email(),
+        fullName=DataGenerator.generate_random_name(),
+        password=random_password,
+        passwordRepeat=random_password,
+        roles=[Roles.USER.value]
+    )
 
 @pytest.fixture(scope="function")
 def creation_user_data(add_test_user):
-    updated_data = add_test_user.copy()
-    updated_data.update({
-        "verified": True,
-        "banned": False
-    })
-    return updated_data
+    return add_test_user.model_copy(update={"verified": True, "banned": False})
 
 @pytest.fixture
 def registered_user(api_manager, add_test_user):
     api_manager.auth_api.register_user(add_test_user)
-    creds = {"email": add_test_user["email"], "password": add_test_user["password"]}
+    creds = {"email": add_test_user.email, "password": add_test_user.password}
     yield creds
 
 
@@ -131,13 +127,13 @@ def common_user(user_session, super_admin, creation_user_data):
     new_session = user_session()
 
     common_user = User(
-        creation_user_data['email'],
-        creation_user_data['password'],
+        creation_user_data.email,
+        creation_user_data.password,
         [Roles.USER.value],
         new_session)
 
     super_admin.api.user_api.create_user(creation_user_data)
-    common_user.api.auth_api.authenticate(common_user.creds)
+    common_user.api.auth_api.authenticate([common_user.email, common_user.password])
     return common_user
 
 
@@ -146,8 +142,8 @@ def admin_user(user_session, super_admin, creation_user_data):
     new_session = user_session()
 
     admin_user = User(
-        creation_user_data['email'],
-        creation_user_data['password'],
+        creation_user_data.email,
+        creation_user_data.password,
         [Roles.ADMIN.value],
         new_session)
 
@@ -158,11 +154,14 @@ def admin_user(user_session, super_admin, creation_user_data):
     session_obj = super_admin.api.session
     session_obj.patch(f"{base}/user/{user_id}", json={"roles": [Roles.USER.value, Roles.ADMIN.value]})
 
-    creds = [creation_user_data['email'], creation_user_data['password']]
+    creds = [creation_user_data.email, creation_user_data.password]
     admin_user.api.auth_api.authenticate(creds)
     return admin_user
 
 
 @pytest.fixture
 def user(request):
-    return request.getfixturevalue(request.param)
+    param = request.param
+    if isinstance(param, str):
+        return request.getfixturevalue(param)
+    return param

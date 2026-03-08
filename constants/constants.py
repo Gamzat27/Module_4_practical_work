@@ -22,3 +22,12 @@ ADMIN_CRED = {
 # логин и пароль для супер админа
 SUPER_ADMIN_USERNAME = "api1@gmail.com"
 SUPER_ADMIN_PASSWORD = "asdqwe123Q"
+
+
+
+
+
+
+GREEN = '\033[32m'
+RED = '\033[31m'
+RESET = '\033[0m'

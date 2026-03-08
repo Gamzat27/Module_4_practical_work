@@ -52,3 +52,13 @@ class DataGenerator:
             "password": password,
             "passwordRepeat": password
         }
+
+    @classmethod
+    def generate_random_email(cls):
+        return faker.unique.email()
+    @classmethod
+    def generate_random_password(cls):
+        return faker.password(length=10, special_chars=False, digits=True, upper_case=True, lower_case=True)
+    @classmethod
+    def generate_random_name(cls):
+        return faker.name()

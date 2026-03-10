@@ -1,6 +1,6 @@
 import pytest
 
-from conftest import common_user, admin_user, super_admin
+from conftest import common_user, admin_user
 
 
 class TestMovieApi:

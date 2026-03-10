@@ -1,0 +1,60 @@
+2026-03-10 02:23:51 [32mINFO[0m [32mpytest tests/api/test_auth.py::TestAuthAPI::test_register_and_login_user (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/register' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+-H 'Cookie: refresh_token=a6b6531c-7d6c-485a-b929-fd40fc78788d' \
+-H 'Content-Length: 266' \
+-H 'Content-Type: application/json' \
+-d '{
+  "email": "vasili92@example.com",
+  "fullName": "Раиса Леонидовна Петухова",
+  "password": "4mYfytkkOU",
+  "passwordRepeat": "4mYfytkkOU",
+  "roles": [
+    "USER"
+  ]
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "id": "1e739143-2df9-4bdc-bca5-8c9e11187093",
+  "email": "vasili92@example.com",
+  "fullName": "Раиса Леонидовна Петухова",
+  "verified": true,
+  "roles": [
+    "USER"
+  ],
+  "createdAt": "2026-03-09T23:23:51.526Z"
+}
+2026-03-10 02:23:51 [32mINFO[0m [32mpytest tests/api/test_auth.py::TestAuthAPI::test_register_and_login_user[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+-H 'Cookie: refresh_token=a6b6531c-7d6c-485a-b929-fd40fc78788d' \
+-H 'Content-Length: 59' \
+-H 'Content-Type: application/json' \
+-d '{
+  "email": "vasili92@example.com",
+  "password": "4mYfytkkOU"
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "user": {
+    "id": "1e739143-2df9-4bdc-bca5-8c9e11187093",
+    "email": "vasili92@example.com",
+    "fullName": "Раиса Леонидовна Петухова",
+    "roles": [
+      "USER"
+    ]
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFlNzM5MTQzLTJkZjktNGJkYy1iY2E1LThjOWUxMTE4NzA5MyIsImVtYWlsIjoidmFzaWxpOTJAZXhhbXBsZS5jb20iLCJyb2xlcyI6WyJVU0VSIl0sInZlcmlmaWVkIjp0cnVlLCJpYXQiOjE3NzMwOTg2MzEsImV4cCI6MTc3MzEwMDQzMX0.C5jizY-pzEa8doKyzVJp35GxU8Nw4U9TPdKW3RcilIE",
+  "refreshToken": "a3219a48-0561-45c5-a29a-621bd2898841",
+  "expiresIn": 1773100431722
+}

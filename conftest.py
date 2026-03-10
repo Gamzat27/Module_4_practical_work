@@ -2,13 +2,16 @@
 import pytest
 import requests
 import copy
+from sqlalchemy.orm import Session
+from db_requester.db_client import get_db_session
 from clients.api_manager import ApiManager
 from utils.datagenerator import DataGenerator
 from constants.constants import ADMIN_CRED
-from resurses.user_creds import SuperAdminCreds
+from resources.user_creds import SuperAdminCreds
 from entities.user import User
 from constants.roles import Roles
 from models.pydantic_models import TestUser
+from db_requester.db_helpers import DBHelper
 
 @pytest.fixture(scope="function")
 def created_movie(admin_api):
@@ -165,3 +168,36 @@ def user(request):
     if isinstance(param, str):
         return request.getfixturevalue(param)
     return param
+
+
+@pytest.fixture(scope="module")
+def db_session() -> Session:
+    """
+    Фикстура, которая создает и возвращает сессию для работы с базой данных
+    После завершения теста сессия автоматически закрывается
+    """
+    db_session = get_db_session()
+    yield db_session
+    db_session.close()
+
+
+@pytest.fixture(scope="function")
+def db_helper(db_session) -> DBHelper:
+    """
+    Фикстура для экземпляра хелпера
+    """
+    db_helper = DBHelper(db_session)
+    return db_helper
+
+@pytest.fixture(scope="function")
+def created_test_user(db_helper):
+    """
+    Фикстура, которая создает тестового пользователя в БД
+    и удаляет его после завершения теста
+    """
+    user = db_helper.create_test_user(DataGenerator.generate_user_data())
+    yield user
+    # Cleanup после теста
+    if db_helper.get_user_by_id(user.id):
+        db_helper.delete_user(user) # ORM‑объект — экземпляр такого класса,
+        # представляющий конкретную строку (запись) в таблице.

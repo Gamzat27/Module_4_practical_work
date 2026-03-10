@@ -1,0 +1,89 @@
+2026-03-10 02:23:45 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_create_movie (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Content-Length: 53' \
+-H 'Content-Type: application/json' \
+-d '{
+  "email": "api1@gmail.com",
+  "password": "asdqwe123Q"
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "user": {
+    "id": "a76b8bf9-af13-45bb-b200-b9db86db26d3",
+    "email": "api1@gmail.com",
+    "fullName": "Админ Кокосовый Куа",
+    "roles": [
+      "USER",
+      "ADMIN",
+      "SUPER_ADMIN"
+    ]
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA",
+  "refreshToken": "a6b6531c-7d6c-485a-b929-fd40fc78788d",
+  "expiresIn": 1773100425415
+}
+2026-03-10 02:23:45 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_create_movie[0m
+curl -X POST 'https://api.dev-cinescope.coconutqa.ru/movies/' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+-H 'Content-Length: 746' \
+-H 'Content-Type: application/json' \
+-d '{
+  "name": "Мера через о",
+  "imageUrl": "https://avatars.mds.yandex.net/i?id=6de842b43efc2b17d6bc840a003ccb71_l-3788438-images-thumbs&n=13",
+  "price": 192,
+  "description": "Грустный палка достоинство тута. Привлекать ставить решение присесть угроза мусор парень.",
+  "location": "SPB",
+  "published": true,
+  "genreId": 6
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "id": 17659,
+  "name": "Мера через о",
+  "price": 192,
+  "description": "Грустный палка достоинство тута. Привлекать ставить решение присесть угроза мусор парень.",
+  "imageUrl": "https://avatars.mds.yandex.net/i?id=6de842b43efc2b17d6bc840a003ccb71_l-3788438-images-thumbs&n=13",
+  "location": "SPB",
+  "published": true,
+  "rating": 0,
+  "genreId": 6,
+  "createdAt": "2026-03-09T23:23:45.600Z",
+  "genre": {
+    "name": "Аниме"
+  }
+}
+2026-03-10 02:23:45 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_create_movie[0m
+curl -X GET 'https://api.dev-cinescope.coconutqa.ru/movies/17659' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+	RESPONSE:
+STATUS_CODE: [32m200[0m
+DATA: {
+  "id": 17659,
+  "name": "Мера через о",
+  "price": 192,
+  "description": "Грустный палка достоинство тута. Привлекать ставить решение присесть угроза мусор парень.",
+  "imageUrl": "https://avatars.mds.yandex.net/i?id=6de842b43efc2b17d6bc840a003ccb71_l-3788438-images-thumbs&n=13",
+  "location": "SPB",
+  "published": true,
+  "rating": 0,
+  "genreId": 6,
+  "createdAt": "2026-03-09T23:23:45.600Z",
+  "reviews": [],
+  "genre": {
+    "name": "Аниме"
+  }
+}

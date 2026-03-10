@@ -57,42 +57,87 @@ class CustomRequester:
         self.headers.update(kwargs)
         self.session.headers.update(kwargs)
 
-
     def log_request_and_response(self, response):
         """
-        Логгирование запросов и ответов. Настройки логгирования описаны в pytest.ini
-        Преобразует вывод в curl-like (-H хэдэеры), (-d тело)
-
-        :param response: Объект response получаемый из метода "send_request"
+        Логгирование запроса и ответа (всегда). Форматирует JSON с сохранением кириллицы.
         """
         try:
             request = response.request
             headers = " \\\n".join([f"-H '{header}: {value}'"
                                     for header, value in request.headers.items()])
-            full_test_name = f"pytest {os.environ.get('PYTEST_CURRENT_TEST', '').replace(' (call)',
-                                                                                         '')}"
 
+            full_test_name = f"pytest {os.environ.get('PYTEST_CURRENT_TEST', '').replace(' (call)', '')}"
+
+            # Формат тела запроса
             body = ""
-            if hasattr(request, 'body') and request.body is not None:
-                if isinstance(request.body, bytes):
-                    body = request.body.decode('utf-8')
-                elif isinstance(request.body, str):
-                    body = request.body
-                body = f"-d '{body}' \n" if body != '{}' else ''
+            if hasattr(request, "body") and request.body is not None:
+                raw_body = request.body
+                if isinstance(raw_body, bytes):
+                    raw_body = raw_body.decode("utf-8")
+                try:
+                    parsed_req = json.loads(raw_body)
+                    pretty_req = json.dumps(parsed_req, ensure_ascii=False, indent=2)
+                    body = f"-d '{pretty_req}' \n"
+                except Exception:
+                    body = f"-d '{raw_body}' \n"
+
+            # Формат тела ответа
+            try:
+                parsed = response.json()
+                resp_body = json.dumps(parsed, ensure_ascii=False, indent=2)
+            except Exception:
+                resp_body = response.text
+
+            response_status = response.status_code
+            status_color = GREEN if response.ok else RED
 
             self.logger.info(
                 f"{GREEN}{full_test_name}{RESET}\n"
                 f"curl -X {request.method} '{request.url}' \\\n"
                 f"{headers} \\\n"
                 f"{body}"
+                f"\tRESPONSE:"
+                f"\nSTATUS_CODE: {status_color}{response_status}{RESET}"
+                f"\nDATA: {resp_body}"
             )
-
-            response_status = response.status_code
-            is_success = response.ok
-            response_data = response.text
-            if not is_success:
-                self.logger.info(f"\tRESPONSE:"
-                                 f"\nSTATUS_CODE: {RED}{response_status}{RESET}"
-                                 f"\nDATA: {RED}{response_data}{RESET}")
         except Exception as e:
             self.logger.info(f"\nLogging went wrong: {type(e)} - {e}")
+
+    # def log_request_and_response(self, response):
+    #     """
+    #     Логгирование запросов и ответов. Настройки логгирования описаны в pytest.ini
+    #     Преобразует вывод в curl-like (-H хэдэеры), (-d тело)
+    #
+    #     :param response: Объект response получаемый из метода "send_request"
+    #     """
+    #     try:
+    #         request = response.request
+    #         headers = " \\\n".join([f"-H '{header}: {value}'"
+    #                                 for header, value in request.headers.items()])
+    #         full_test_name = f"pytest {os.environ.get('PYTEST_CURRENT_TEST', '').replace(' (call)',
+    #                                                                                      '')}"
+    #
+    #         body = ""
+    #         if hasattr(request, 'body') and request.body is not None:
+    #             if isinstance(request.body, bytes):
+    #                 body = request.body.decode('utf-8')
+    #             elif isinstance(request.body, str):
+    #                 body = request.body
+    #             body = f"-d '{body}' \n" if body != '{}' else ''
+    #
+    #         self.logger.info(
+    #             f"{GREEN}{full_test_name}{RESET}\n"
+    #             f"curl -X {request.method} '{request.url}' \\\n"
+    #             f"{headers} \\\n"
+    #             f"{body}"
+    #         )
+    #
+    #         response_status = response.status_code
+    #         is_success = response.ok
+    #         response_data = response.text
+    #         if not is_success:
+    #             self.logger.info(f"\tRESPONSE:"
+    #                              f"\nSTATUS_CODE: {RED}{response_status}{RESET}"
+    #                              f"\nDATA: {RED}{response_data}{RESET}")
+    #     except Exception as e:
+    #         self.logger.info(f"\nLogging went wrong: {type(e)} - {e}")

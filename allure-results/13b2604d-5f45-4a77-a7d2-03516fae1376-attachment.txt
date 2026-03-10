@@ -1,0 +1,167 @@
+2026-03-10 02:23:48 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_get_movies_parametrize[MSK][0m
+curl -X GET 'https://api.dev-cinescope.coconutqa.ru/movies/?locations=MSK' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+	RESPONSE:
+STATUS_CODE: [32m200[0m
+DATA: {
+  "movies": [
+    {
+      "id": 559,
+      "name": "Реконструируемая и оптимальная защищенная линия",
+      "description": "Разуметься боец ремень пятеро. Июнь порода художественный полностью материя сверкающий. Отражение разводить запустить налоговый военный художественный монета.",
+      "genreId": 3,
+      "imageUrl": null,
+      "price": 308,
+      "rating": 4,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:58:09.159Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 564,
+      "name": "Амортизированная и приоритетная сеть Экстранет",
+      "description": "Посвятить кузнец мгновение ответить песенка засунуть. Экзамен ночь порт человечек факультет развернуться. Цвет бровь выгнать призыв вообще хотеть проход.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 371,
+      "rating": 8,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:58:11.158Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 566,
+      "name": "Корпоративный и бескомпромиссный доступ",
+      "description": "Задержать недостаток миллиард цепочка заложить холодно мгновение угол. Спорт медицина болото команда через бетонный порог. Лапа ягода предоставить хотеть проход второй.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 858,
+      "rating": 3,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:58:23.885Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 572,
+      "name": "Расширенное и национальное взаимодействие",
+      "description": "Холодно покинуть монета избегать что космос левый. Бровь прежний порода отдел выразить. Домашний тусклый некоторый написать возмутиться.\nКидать потом совет плод хотеть. Равнодушный ярко ныне.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 770,
+      "rating": 8,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:58:27.029Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 575,
+      "name": "Продвинутый и национальный графический интерфейс",
+      "description": "Рота издали умолять рассуждение. Хотеть материя лапа необычный народ поколение. Строительство спалить налоговый успокоиться.",
+      "genreId": 3,
+      "imageUrl": null,
+      "price": 961,
+      "rating": 0,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:59:06.258Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 579,
+      "name": "Интегрированный и специализированный набор инструкций",
+      "description": "Отдел запустить нож зима.\nСпалить хлеб выражение подземный. Развернуться термин прошептать одиннадцать бок. Товар призыв расстройство пропаганда появление отметить неправда.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 107,
+      "rating": 9,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:59:08.304Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 586,
+      "name": "Универсальная и контекстуальная служба техподдержки",
+      "description": "Son trade near resource. Think heart onto its number. Quite authority stand still plant significant whom.\nAgent spend war available yes interview.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 846,
+      "rating": 1,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T20:59:25.137Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 595,
+      "name": "Автоматизированная и прибыльная конгломерация",
+      "description": "Вывести спалить хотеть какой бригада важный анализ лететь. Вздрогнуть висеть точно идея военный. Инфекция более изменение очутиться совещание.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 140,
+      "rating": 7,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T21:26:21.877Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 596,
+      "name": "Удобная и систематическая модель",
+      "description": "Низкий инвалид вскинуть танцевать неожиданный.\nСамостоятельно даль четыре полоска. Механический около спорт проход провинция.",
+      "genreId": 3,
+      "imageUrl": null,
+      "price": 887,
+      "rating": 0,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T21:26:22.174Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    },
+    {
+      "id": 600,
+      "name": "Самодостаточный и действенный доступ",
+      "description": "Висеть военный расстегнуть ботинок ручей еврейский задержать. Дьявол способ инвалид вздрогнуть.",
+      "genreId": 3,
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9G",
+      "price": 275,
+      "rating": 7,
+      "location": "MSK",
+      "published": true,
+      "createdAt": "2025-05-20T21:26:24.173Z",
+      "genre": {
+        "name": "Фантастика"
+      }
+    }
+  ],
+  "count": 1415,
+  "page": 1,
+  "pageSize": 10,
+  "pageCount": 142
+}

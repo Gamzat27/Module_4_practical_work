@@ -1,0 +1,60 @@
+2026-03-10 02:23:48 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_get_movie (setup)[0m
+curl -X POST 'https://api.dev-cinescope.coconutqa.ru/movies/' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+-H 'Content-Length: 864' \
+-H 'Content-Type: application/json' \
+-d '{
+  "name": "Свежий",
+  "imageUrl": "https://cdnb.artstation.com/p/assets/images/images/089/846/525/large/chrissectest2-sub-zero-scorpion-5120x2880-17601.jpg?1752102644",
+  "price": 176,
+  "description": "Нервно прежде сверкающий присесть эпоха еврейский механический. Мера приличный правление куча близко решение.",
+  "location": "MSK",
+  "published": true,
+  "genreId": 2
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "id": 17662,
+  "name": "Свежий",
+  "price": 176,
+  "description": "Нервно прежде сверкающий присесть эпоха еврейский механический. Мера приличный правление куча близко решение.",
+  "imageUrl": "https://cdnb.artstation.com/p/assets/images/images/089/846/525/large/chrissectest2-sub-zero-scorpion-5120x2880-17601.jpg?1752102644",
+  "location": "MSK",
+  "published": true,
+  "rating": 0,
+  "genreId": 2,
+  "createdAt": "2026-03-09T23:23:48.387Z",
+  "genre": {
+    "name": "Комедия"
+  }
+}
+2026-03-10 02:23:48 [32mINFO[0m [32mpytest tests/api/test_api_movies.py::TestMovieApi::test_get_movie[0m
+curl -X GET 'https://api.dev-cinescope.coconutqa.ru/movies/17662' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjI1LCJleHAiOjE3NzMxMDA0MjV9.f7BL_WKALorgjvMy5eK_5650BhyIq-vzOJa1P2zbtWA' \
+	RESPONSE:
+STATUS_CODE: [32m200[0m
+DATA: {
+  "id": 17662,
+  "name": "Свежий",
+  "price": 176,
+  "description": "Нервно прежде сверкающий присесть эпоха еврейский механический. Мера приличный правление куча близко решение.",
+  "imageUrl": "https://cdnb.artstation.com/p/assets/images/images/089/846/525/large/chrissectest2-sub-zero-scorpion-5120x2880-17601.jpg?1752102644",
+  "location": "MSK",
+  "published": true,
+  "rating": 0,
+  "genreId": 2,
+  "createdAt": "2026-03-09T23:23:48.387Z",
+  "reviews": [],
+  "genre": {
+    "name": "Комедия"
+  }
+}

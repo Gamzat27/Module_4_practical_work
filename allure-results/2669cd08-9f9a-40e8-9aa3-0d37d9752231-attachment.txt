@@ -1,0 +1,29 @@
+2026-03-10 02:23:54 [32mINFO[0m [32mpytest tests/api/test_user.py::TestUser::test_db_requests (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'User-Agent: python-requests/2.32.5' \
+-H 'Accept-Encoding: gzip, deflate' \
+-H 'Accept: */*' \
+-H 'Connection: keep-alive' \
+-H 'Content-Length: 53' \
+-H 'Content-Type: application/json' \
+-d '{
+  "email": "api1@gmail.com",
+  "password": "asdqwe123Q"
+}' 
+	RESPONSE:
+STATUS_CODE: [32m201[0m
+DATA: {
+  "user": {
+    "id": "a76b8bf9-af13-45bb-b200-b9db86db26d3",
+    "email": "api1@gmail.com",
+    "fullName": "Админ Кокосовый Куа",
+    "roles": [
+      "USER",
+      "ADMIN",
+      "SUPER_ADMIN"
+    ]
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3NmI4YmY5LWFmMTMtNDViYi1iMjAwLWI5ZGI4NmRiMjZkMyIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzczMDk4NjM0LCJleHAiOjE3NzMxMDA0MzR9.Q6YtqKlp8IXlkdp8xVJ1nIMBAOn2xsedzm6_NGRao8M",
+  "refreshToken": "190fbaf2-e5b3-40bb-a81f-b7e547c5f209",
+  "expiresIn": 1773100434727
+}

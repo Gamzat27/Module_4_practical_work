@@ -68,11 +68,3 @@ class DBHelper:
             if obj:
                 self.db_session.delete(obj)
         self.db_session.commit()
-
-
-'''
-Пример хелпера для movies
-def get_movie_by_id(self, movie_id: str):
-    """Получает фильм по ID"""
-    return self.db_session.query(MovieDBModel).filter(MovieDBModel.id == movie_id).first()
-'''

@@ -21,6 +21,3 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def get_db_session():
     """Создает новую сессию БД"""
     return SessionLocal()
-
-
-

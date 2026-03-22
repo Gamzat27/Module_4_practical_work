@@ -22,7 +22,11 @@ class TestMovieApi:
             get_resp = movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
             assert get_resp.json()["name"] == resp.json()["name"], "Имена не сходятся."
 
-
+    @allure.feature("Удаление фильма.")
+    @allure.step("Запуск теста на удаление фильма по id.")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.label("Qa_name", "Gamzat")
+    @pytest.mark.smoke
     @pytest.mark.parametrize(
         "user, expected_delete_status",
         [
@@ -33,14 +37,20 @@ class TestMovieApi:
         indirect=["user"]
     )
     def test_delete_movie(self, user, movies_api, my_get_film, expected_delete_status):
-        user.api.movies_api.delete_movie(movie_id=my_get_film["id"], expected_status=expected_delete_status)
+        with allure.step(f"Запуск попытка удалить фильм с ролью: {user}"):
+            user.api.movies_api.delete_movie(movie_id=my_get_film["id"], expected_status=expected_delete_status)
 
-        if expected_delete_status == 200:
-            user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=404)
-        else:
-            user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=200)
+            if expected_delete_status == 200:
+                user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=404)
+            else:
+                user.api.movies_api.get_movie(movie_id=my_get_film["id"], expected_status=200)
 
 
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.label("Qa_name", "Gamzat")
+    @allure.feature("Получение фильма.")
+    @allure.step("Запуск теста на получение фильма.")
+    @pytest.mark.smoke
     def test_get_movie(self, movies_api, my_get_film):
         movie_id = my_get_film["id"]
         resp = movies_api.get_movie(movie_id=movie_id, expected_status=200)

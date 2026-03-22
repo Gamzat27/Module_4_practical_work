@@ -1,27 +1,24 @@
 
 import pytest
 import allure
-import time
-from playwright.sync_api import sync_playwright, Page
+from playwright.sync_api import Page
 from models.page_login_models import CinescopLoginPage
 
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.feature("Логин юзера, который уже есть в базе.")
+@allure.epic("Тестирование UI")
+@allure.feature("Тестирование Страницы Login")
+@pytest.mark.ui
 @pytest.mark.smoke
-def test_login_by_ui(registered_user, page: Page):
+class TestloginPage:
 
-     with allure.step("Создаем объект страницы регистрации cinescope"):
-          login_page = CinescopLoginPage(page)
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.title("Проведение успешного входа в систему")
+    def test_login_by_ui(self, registered_user, page: Page):
 
-     with allure.step("Открываем страницу"):
-          login_page.open()
-          login_page.login(registered_user["email"], registered_user["password"])
+        login_page = CinescopLoginPage(page)
+        login_page.open()
+        login_page.login(registered_user["email"], registered_user["password"])
 
-     with allure.step("Проверка редиректа на домашнюю страницу"):
-          login_page.wait_redirect_to_home_page()
-
-     with allure.step("Проверка появления и исчезновения алерта"):
-          login_page.check_allert()
-
-     time.sleep(5)
+        login_page.assert_was_redirect_to_home_page()
+        login_page.make_screenshot_and_attach_to_allure()
+        login_page.assert_allert_was_pop_up()

@@ -23,7 +23,7 @@ def my_get_film(admin_api):
     payload = DataGenerator.generate_movie()
     create_resp = admin_api.movies_api.create_movie(payload, expected_status=201)
     movie = create_resp.json()
-    yield movie
+    return movie
 
 @pytest.fixture(scope="session")
 def session():
@@ -43,7 +43,7 @@ def api_manager(session):
 
 @pytest.fixture(scope="session")
 def admin_api(api_manager, session):
-    resp = api_manager.auth_api.login_user(ADMIN_CRED)
+    resp = api_manager.auth_api.login_user(login_data=ADMIN_CRED)
     resp.raise_for_status()
     try:
         token = resp.json().get("accessToken")

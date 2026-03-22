@@ -56,7 +56,7 @@ class DataGenerator:
 
     @classmethod
     def generate_random_email(cls):
-        return faker.unique.email()
+        return faker.unique.email().replace("_", "-")
     @classmethod
     def generate_random_password(cls):
         return faker.password(length=10, special_chars=False, digits=True, upper_case=True, lower_case=True)

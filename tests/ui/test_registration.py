@@ -1,28 +1,29 @@
 
-import time
 import pytest
 import allure
+from playwright.sync_api import Page
 from models.page_register_models import CinescopRegisterPage
 from utils.datagenerator import DataGenerator
 
+@allure.epic("Тестирование UI")
+@allure.feature("Тестирование Страницы Register")
+@pytest.mark.ui
 @pytest.mark.smoke
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.feature("Регистрация нового пользователя.")
-def test_register_by_ui(page) -> None:
-    with allure.step(f"Создание юзера для регистрации."):
-        random_email: str = DataGenerator.generate_random_email()
-        random_name: str = DataGenerator.generate_random_name()
-        random_password: str = DataGenerator.generate_random_password()
+class TestRegisterPage:
 
-    with allure.step("Создания объекта класса CinescopRegisterPage c использованием фикстуры page."):
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.title("Проведение успешной регистрации")
+    def test_register_by_ui(self, page: Page):
+
+        random_email = DataGenerator.generate_random_email()
+        random_name = DataGenerator.generate_random_name()
+        random_password = DataGenerator.generate_random_password()
+
         register_page = CinescopRegisterPage(page)
-
-    with allure.step("Процесс открытия страницы /register, заполнения полей и клик по кнопке 'Зарегестрироваться'."):
         register_page.open()
-        register_page.register(full_name=f"PlaywrightTest {random_name}", email=random_email,
-                           password=random_password, confirm_password=random_password)
-    with allure.step("Убеждаемся, что перенаправление на эдпоинт '/login' прошло и аллерт вышел."):
-        register_page.wait_redirect_to_login_page()
-        register_page.check_allert()
+        register_page.register(f"PlaywrightTest {random_name}", random_email,
+                               random_password, random_password)
 
-    time.sleep(5)
+        register_page.assert_was_redirect_to_login_page()
+        register_page.make_screenshot_and_attach_to_allure()
+        register_page.assert_allert_was_pop_up()

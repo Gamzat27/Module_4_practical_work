@@ -1,5 +1,6 @@
 
 import random
+import datetime
 from faker import Faker
 
 faker = Faker(locale="ru_RU")
@@ -34,3 +35,52 @@ class DataGenerator:
             "published": faker.boolean(chance_of_getting_true=75),
             "genreId": random.choice(cls.GENRE_IDS),
         }
+
+    @classmethod
+    def generate_user(cls, email=None, full_name=None, password=None):
+        # по умолчанию генерируем данные, если не переданы
+        if email is None:
+            email = faker.unique.email()
+        if full_name is None:
+            full_name = faker.name()
+        if password is None:
+            # faker.password позволяет задать требования: длину и наличие цифр/символов/регистра
+            password = faker.password(length=10, special_chars=False, digits=True, upper_case=True, lower_case=True)
+
+        return {
+            "email": email,
+            "fullName": full_name,
+            "password": password,
+            "passwordRepeat": password
+        }
+
+    @classmethod
+    def generate_random_email(cls):
+        return faker.unique.email().replace("_", "-")
+    @classmethod
+    def generate_random_password(cls):
+        return faker.password(length=10, special_chars=False, digits=True, upper_case=True, lower_case=True)
+    @classmethod
+    def generate_random_name(cls):
+        return faker.name()
+
+    @staticmethod
+    def generate_user_data() -> dict:
+        """Генерирует данные для тестового пользователя"""
+        from uuid import uuid4
+
+        return {
+            'id': f'{uuid4()}',  # генерируем UUID как строку
+            'email': DataGenerator.generate_random_email(),
+            'full_name': DataGenerator.generate_random_name(),
+            'password': DataGenerator.generate_random_password(),
+            'created_at': datetime.datetime.now(),
+            'updated_at': datetime.datetime.now(),
+            'verified': False,
+            'banned': False,
+            'roles': '{USER}'
+        }
+
+    @staticmethod
+    def generate_random_int(n):
+        return random.randrange(n)

@@ -9,4 +9,3 @@ __pycache__/
 *.log
 *.csv
 *.env
-.env

@@ -4,8 +4,10 @@ from models.pydantic_models import RegisterUserResponse
 from clients.api_manager import ApiManager
 
 
+@allure.epic("Тесты системы регистрации и авторизации")
 class TestAuthAPI:
 
+    @allure.description("Тестирование успешной регистрации нового пользователя")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     def test_register_user(self, api_manager: ApiManager, creation_user_data):
@@ -13,6 +15,7 @@ class TestAuthAPI:
         register_user_response = RegisterUserResponse(**response.json())
         assert register_user_response.email == creation_user_data.email, "Email не совпадает"
 
+    @allure.description("Тестирование успешной регистрации и логина нового пользователя")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     def test_register_and_login_user(self, api_manager, registered_user):

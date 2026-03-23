@@ -1,7 +1,7 @@
 
-from pydantic import BaseModel, Field, field_validator
-import datetime
-from typing import Optional
+from pydantic import BaseModel, Field, field_validator, HttpUrl
+from datetime import datetime
+from typing import Optional, List, Dict
 from constants.roles import Roles
 
 
@@ -43,7 +43,39 @@ class RegisterUserResponse(BaseModel):
     def validate_created_at(cls, value: str) -> str:
         # Валидатор для проверки формата даты и времени (ISO 8601).
         try:
-            datetime.datetime.fromisoformat(value)
+            datetime.fromisoformat(value)
         except ValueError:
             raise ValueError("Некорректный формат даты и времени. Ожидается формат ISO 8601.")
         return value
+
+
+class Genre(BaseModel):
+    id: Optional[int] = None
+    name: str
+
+
+class MovieSchema(BaseModel):
+
+    id: int
+    name: str = Field(..., min_length=1)
+    price: int = Field(..., ge=0)
+    description: Optional[str] = None
+    imageUrl: Optional[HttpUrl] = None
+    location: Optional[str] = None
+    published: bool = False
+    rating: Optional[float] = 0.0
+    genreId: Optional[int] = None
+    genre: Optional[Genre] = None
+    createdAt: Optional[datetime] = None
+    reviews: list[dict] = None
+
+    @field_validator("createdAt", mode="before")
+    def parse_created_at(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, str):
+            return datetime.fromisoformat(v.replace("Z", "+00:00"))
+        return v
+
+    class Config:
+        json_encoders = {datetime: lambda v: v.isoformat()}

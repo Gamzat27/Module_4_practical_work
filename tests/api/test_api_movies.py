@@ -1,6 +1,7 @@
 import pytest
 import allure
 from conftest import common_user, admin_user
+from models.pydantic_models import MovieSchema
 
 @allure.epic("Тестирование эндпоинта '/movies'.")
 @allure.story("Тестирование создания, получения, изменения и удаления фильмов.")
@@ -14,11 +15,13 @@ class TestMovieApi:
     def test_create_movie(self, movies_api, created_movie, db_helper):
         with allure.step(f"Отправка post запроса на создание фильма c name: {created_movie['name']}"):
             resp = movies_api.create_movie(created_movie, expected_status=201)
-            assert resp.json()["name"] == created_movie["name"], ("Имя фильма в тесте не соответствует "
+            movie = MovieSchema(**resp.json())
+            assert movie.name == created_movie["name"], ("Имя фильма в тесте не соответствует "
                                                              "имени фильма сгенерированного в фикстуре.")
-            assert resp.json()["genreId"] == created_movie["genreId"]
-            assert resp.json()["price"] == created_movie["price"], "Цены фильмов не совпадают."
+            assert movie.genreId == created_movie["genreId"]
+            assert movie.price == created_movie["price"], "Цены фильмов не совпадают."
             assert db_helper.movie_exists_by_name(name=resp.json()["name"]) == True
+
         with allure.step(f"Отправка get запроса на получение созданного фильма по id: {resp.json()['id']}"):
             get_resp = movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
             assert get_resp.json()["name"] == resp.json()["name"], "Имена не сходятся."

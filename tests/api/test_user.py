@@ -25,12 +25,15 @@ class TestUser:
         assert created_user_response.roles == creation_user_data.roles, "Роли должны совпадать."
         assert created_user_response.fullName == creation_user_data.fullName, "Имя должно совпадать."
 
+    @allure.description("Тест на получение юзера по id")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.slow
     def test_get_user_by_id_common_user(self, common_user):
         common_user.api.user_api.get_user_info(common_user.email, expected_status=403)
 
+    @allure.description("Тест наличия юзера в базе")
     @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.smoke
     def test_db_requests(self, super_admin, db_helper, created_test_user):
         assert created_test_user == db_helper.get_user_by_id(created_test_user.id)
         assert db_helper.user_exists_by_email("api1@gmail.com")

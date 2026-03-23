@@ -107,13 +107,11 @@ class TestMovieApi:
         assert movie.name == new_data["name"], "Название не сходится"
         assert db_helper.movie_exists_by_name(name=new_data["name"]), "Имя в бд не сходится."
 
-    @allure.description("Поиск фильмов по локации")
-    @pytest.mark.parametrize("locations", ["MSK", "SPB"])
-    def test_get_movies_parametrize(self, movies_api, locations):
-        response = movies_api.get_movies(params={"locations": locations}, expected_status=200)
-        movies = response.json()["movies"]
-        for movie in movies:
-            assert movie["location"] == locations
+    @pytest.mark.parametrize("genreId", [8, 9], ids=["genre_8", "genre_9"])
+    def test_get_movies_by_params_genre_id(self, movies_api, genreId):
+        resp = movies_api.get_movies(params={"genreId": genreId}, expected_status=200)
+        movies = resp.json().get("movies", [])
+        assert all(m.get("genreId") == genreId for m in movies), f"Найден фильм с другим genreId для {genreId}"
 
 
     # негативно-позитивный кейсы

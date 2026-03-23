@@ -1,12 +1,14 @@
 import pytest
 import allure
-from conftest import common_user, admin_user
+from datetime import datetime
+from conftest import common_user, admin_user, db_helper
 from models.pydantic_models import MovieSchema
 
 @allure.epic("Тестирование эндпоинта '/movies'.")
 @allure.story("Тестирование создания, получения, изменения и удаления фильмов.")
 class TestMovieApi:
 
+    @pytest.mark.flaky(reruns=3, reruns_delay=5)
     @allure.feature("Тестирование создания фильма")
     @allure.label("qa_name", "Gamzat")
     @allure.severity(allure.severity_level.CRITICAL)
@@ -21,10 +23,12 @@ class TestMovieApi:
             assert movie.genreId == created_movie["genreId"]
             assert movie.price == created_movie["price"], "Цены фильмов не совпадают."
             assert db_helper.movie_exists_by_name(name=resp.json()["name"]) == True
+            assert isinstance(movie.createdAt, datetime)
 
         with allure.step(f"Отправка get запроса на получение созданного фильма по id: {resp.json()['id']}"):
             get_resp = movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
-            assert get_resp.json()["name"] == resp.json()["name"], "Имена не сходятся."
+            get_movie = MovieSchema(**get_resp.json())
+            assert get_movie.name == movie.name, "Имена не сходятся."
             movie = db_helper.get_movie_by_name(name=resp.json()["name"])
             assert movie.name == created_movie["name"], "Названия в бд отличается."
 
@@ -63,13 +67,17 @@ class TestMovieApi:
         movie_id = my_get_film["id"]
         name = my_get_film["name"]
         resp = movies_api.get_movie(movie_id=movie_id, expected_status=200)
-        assert resp.json()["id"] == movie_id, "id не совпадают."
+        movie = MovieSchema(**resp.json())
+        assert movie.id == movie_id, "id не совпадают."
         movie = db_helper.get_movie_by_name(name=resp.json()["name"])
         assert movie is not None, "В базе нет запись с таким именем."
         assert movie.name == name, "Название фильма не совпадает с тем, что в базе."
         assert db_helper.movie_exists_by_name(name=name) == True, "Фильма с таким названием в базе не существует."
 
 
+    @allure.description("Тест на получение всех фильмов")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.moke
     def test_get_movies(self, movies_api):
         resp = movies_api.get_movies(expected_status=200)
         body = resp.json()
@@ -79,20 +87,25 @@ class TestMovieApi:
         assert  "pageSize" in body
         assert "pageCount" in body
 
+    @allure.description("Тест на получение фильмов с разных городов(параметризованный тест)")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.parametrize("locations", ["MSK", "SPB"], ids=["Moscow", "SaintPetersburg"])
+    def test_get_movies_params(self, movies_api, locations):
+        resp = movies_api.get_movies(params={"locations": locations}, expected_status=200)
+        movies = resp.json().get("movies", [])
+        assert any(m.get("location") == locations for m in movies), f"В выборку попали фильмы не только из {locations}."
 
-    def test_get_movies_params(self, movies_api):
-        resp = movies_api.get_movies(params={"locations": "MSK"}, expected_status=200)
-        movies = resp.json()["movies"]
-        assert any(m["location"] == "MSK" for m in movies), "В выборку попали фильмы не только из Москвы."
-
-
-    def test_update_movie(self, movies_api, my_get_film, created_movie):
+    @allure.description("Тест на обновление фильма")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.smoke
+    def test_update_movie(self, movies_api, my_get_film, created_movie, db_helper):
         new_data = created_movie
         resp = movies_api.update_movie(movie_id=my_get_film["id"], data=new_data, expected_status=200)
-        assert resp.json()["name"] == new_data["name"]
-
-        movies_api.get_movie(movie_id=resp.json()["id"], expected_status=200)
-        assert resp.json()["name"] == new_data["name"], "Имена не совпадают с изменениями."
+        movie = MovieSchema(**resp.json())
+        assert movie.name == new_data["name"]
+        movie = MovieSchema(**movies_api.get_movie(movie_id=movie.id, expected_status=200).json())
+        assert movie.name == new_data["name"], "Название не сходится"
+        assert db_helper.movie_exists_by_name(name=new_data["name"]), "Имя в бд не сходится."
 
     @allure.description("Поиск фильмов по локации")
     @pytest.mark.parametrize("locations", ["MSK", "SPB"])

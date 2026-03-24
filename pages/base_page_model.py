@@ -1,7 +1,7 @@
 
 import allure
 from playwright.sync_api import Page
-from models.action_page_model import PageAction
+from pages.action_page_model import PageAction
 
 
 class BasePage(PageAction):

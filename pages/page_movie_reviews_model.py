@@ -1,5 +1,5 @@
 
-from models.base_page_model import BasePage
+from pages.base_page_model import BasePage
 from playwright.sync_api import Page
 
 class PageMovieReviews(BasePage):

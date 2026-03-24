@@ -1,6 +1,7 @@
 
 import pytest
 from common.tools import Tools
+from pages.page_login_models import CinescopLoginPage
 
 DEFAULT_UI_TIMEOUT = 30000
 
@@ -32,11 +33,9 @@ def login_page(page, registered_user):
     email = registered_user["email"]
     password = registered_user["password"]
 
-    page.goto("https://dev-cinescope.coconutqa.ru/login")
-    page.fill("input[name='email']", email)
-    page.fill("input[name='password']", password)
-
-    page.locator('button[type="submit"]:has-text("Войти")').click()
-
+    login_page = CinescopLoginPage(page)
+    login_page.open()
+    login_page.login(email=email, password=password)
+    login_page.assert_was_redirect_to_home_page()
     page.wait_for_selector('button:has-text("Профиль")', timeout=5000)
     yield page

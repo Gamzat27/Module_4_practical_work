@@ -2,7 +2,7 @@
 import pytest
 import allure
 from playwright.sync_api import Page
-from models.page_login_models import CinescopLoginPage
+from pages.page_login_models import CinescopLoginPage
 
 
 @allure.epic("Тестирование UI")
